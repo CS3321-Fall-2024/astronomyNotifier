@@ -8,9 +8,11 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.11"
-nasapi = "^0.0.5"
-pytest = "^8.3.3"
 
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+nasapi = "^0.0.5"
 
 [build-system]
 requires = ["poetry-core"]
