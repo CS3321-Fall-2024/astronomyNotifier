@@ -158,6 +158,17 @@ files = [
 ]
 
 [[package]]
+name = "astronomy-engine"
+version = "2.1.19"
+description = "Astronomy calculation for Sun, Moon, and planets."
+optional = false
+python-versions = "*"
+files = [
+    {file = "astronomy-engine-2.1.19.tar.gz", hash = "sha256:95b797b87b659adc0602a6a205143ce5a10451664e80650bb7cd8ba3c8f1f02b"},
+    {file = "astronomy_engine-2.1.19-py3-none-any.whl", hash = "sha256:232ba7dd2bbf42225c48be6721b676e8c6c079dbd4588d2781dfa68adcb6f67f"},
+]
+
+[[package]]
 name = "attrs"
 version = "24.2.0"
 description = "Classes Without Boilerplate"
@@ -1234,4 +1245,4 @@ propcache = ">=0.2.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "be71f511d8ea4612e9562c9b8b050228f4a70bb029984e80ce5c25121e35aff9"
+content-hash = "48b5e33e961fdad489139039a7b9520b5673946058b52a0fdad6ed212f302160"
