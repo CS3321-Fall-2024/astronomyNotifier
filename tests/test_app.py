@@ -1,15 +1,26 @@
+import asyncio
 import pytest
-from src import app
+from main import hello
 
+pytest_plugins = ("pytest_asyncio",)
+
+#@pytest.mark.parametrize(
+#     "expected",
+#     [
+#         pytest.param("Pocatello", id="Getting the city name"), 
+#         ],
+# )
+# 
+# 
+# def test_get_current_city(expected):
+#     assert app.get_current_city() == expected
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "expected",
-    [
-        pytest.param("Pocatello", id="Getting the city name"), 
-        ],
+        "expected",
+        [
+            pytest.param("hello world!", id="init test"),
+            ],
 )
-
-
-def test_get_current_city(expected):
-    assert app.get_current_city() == expected
-
-
+async def test_hello(expected):
+    assert await hello() == expected
