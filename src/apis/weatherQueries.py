@@ -1,6 +1,7 @@
 import httpx
 import astronomy
-from datetime import datetime, timedelta
+from datetime import datetime, timezone
+import python_weather
 
 async def get_asteroids(api_key):
 
@@ -27,16 +28,10 @@ async def get_asteroids(api_key):
 async def get_next_eclipse():
     latitude = 42.8713
     longitude = -112.4455
-    prev_eclipse_time = datetime.now()
-    observer = astronomy.Observer(latitude, longitude)
     
-    async with httpx.AsyncClient() as client:
-        try:
-            next_solar = await astronomy.NextLocalSolarEclipse(prev_eclipse_time, observer)
-            return next_solar
-        except httpx.HTTPStatusError as e:
-            print(f"HTTP error occurred: {e.response.status_code} - {e.response.text}")
-            return None
-        except httpx.RequestError as e:
-            print(f"Request error occurred: {e}")
-            return None
+    location = astronomy.Observer(latitude=latitude, longitude=longitude)
+    time_instance = astronomy.Time('2024-11-10')
+    
+    next_eclipse = astronomy.SearchLocalSolarEclipse(time_instance, location)
+    
+    return next_eclipse
