@@ -1,4 +1,4 @@
-from quart import Quart
+from quart import Quart, jsonify
 from apis.weatherQueries import *
 
 app = Quart(__name__)
@@ -34,8 +34,9 @@ async def hello():
 
 @app.route("/test1")
 async def test1():
-    next_solar = await get_next_eclipse()
-
+    lat, lon = await get_current_location()
+    next_solar = await get_next_eclipse(lat, lon)
+    
     if next_solar:
         result = f"Next Solar Eclipse:<br>"
         result += f"Type: {next_solar.kind.name}<br>"
@@ -49,7 +50,35 @@ async def test1():
 
 @app.route("/test2")
 async def test2():
-    return "test2"
+    lat, lon = await get_current_location()
+    if lat is None or lon is None:
+        print("Unable to fetch location")
+        return
+
+    # Get the next 5 ISS passes within the next 7 days
+    passes = get_next_iss_pass(lat, lon, p=5, d=7)
+    if passes:
+        result = "Upcoming ISS Passes:<br>\n"
+        for idx, pass_time in enumerate(passes, 1):
+            result += f"Pass {idx}: {pass_time}<br>\n"
+        return result
+    else:
+        return f"No passes found within the provided days."
+    
+@app.route("/test3")
+async def test3():
+    lat, lon = await get_current_location()
+    distance, lat_iss, lon_iss = await get_distance_to_iss(lat, lon)
+    result = f"The ISS is approximately {distance:.2f} kilometers away from your location.<br>"
+    result += f"The ISS is currently at latitude {lat_iss:.2f} and longitude {lon_iss:.2f}.<br>"
+    return result
+
+@app.route("/test4")
+async def test4():
+    api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
+    result = await get_nasa_picture_of_the_day(api_key)
+    return result
+    
 
 
 if __name__ == "__main__":
