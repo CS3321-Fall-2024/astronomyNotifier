@@ -4,7 +4,7 @@ from apis.weatherQueries import *
 app = Quart(__name__)
 
 
-@app.route("/")
+@app.route("/get_asteroids")
 async def hello():
 
     api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
@@ -32,7 +32,7 @@ async def hello():
     return magnitude_response + "<br>" + distance_response
 
 
-@app.route("/test1")
+@app.route("/get_next_eclipse")
 async def test1():
     lat, lon = await get_current_location()
     next_solar = await get_next_eclipse(lat, lon)
@@ -48,7 +48,7 @@ async def test1():
     return result
 
 
-@app.route("/test2")
+@app.route("/get_next_iss_pass")
 async def test2():
     lat, lon = await get_current_location()
     if lat is None or lon is None:
@@ -65,7 +65,7 @@ async def test2():
     else:
         return f"No passes found within the provided days."
     
-@app.route("/test3")
+@app.route("/get_distance_to_iss")
 async def test3():
     lat, lon = await get_current_location()
     distance, lat_iss, lon_iss = await get_distance_to_iss(lat, lon)
@@ -73,8 +73,8 @@ async def test3():
     result += f"The ISS is currently at latitude {lat_iss:.2f} and longitude {lon_iss:.2f}.<br>"
     return result
 
-@app.route("/test4")
-async def test4():
+@app.route("/get_nasa_picture_of_the_day")
+async def get_nasa_picture_of_the_day():
     api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
     result = await get_nasa_picture_of_the_day(api_key)
     return result
