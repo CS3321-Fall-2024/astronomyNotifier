@@ -8,31 +8,10 @@ open_meteo_url = "https://api.open-meteo.com/v1/forecast"
 
 ipinfo_url = "http://ipinfo.io/json"
 
-async def get_user_location(): # getting the user's longitude and latitude
-    async with httpx.AsyncClient() as client:
-        response = await client.get(ipinfo_url)
-        
-        if response.status_code == 200:
-            location_data = response.json()
-            # Parse latitude and longitude from IPInfo location data
-            loc = location_data.get("loc", "").split(",")
-            if len(loc) == 2:
-                latitude = loc[0]
-                longitude = loc[1]
-                return latitude, longitude
-            else:
-                print("Unable to determine latitude and longitude.")
-                return None, None
-        else:
-            print("Unable to fetch location data.")
-            return None, None
-
-async def get_moon_phase(date): # getting the moon phase for specific dates
-    moon = ephem.Moon(date)
-    moon_phase = moon.phase
-
+async def get_moon_phase(current_date): # getting the moon phase for specific dates
+    phases = []
     # Moon phase names and their corresponding values
-    phases = [
+    phase_names = [
         (0, "New Moon"),
         (50, "Waxing Crescent"),
         (100, "First Quarter"),
@@ -43,58 +22,90 @@ async def get_moon_phase(date): # getting the moon phase for specific dates
         (350, "Waning Crescent"),
     ]
     
-    for phase_value, phase_name in phases:
-        if moon_phase < phase_value:
-            return phase_name
-    return "Waning Crescent"  # Default to Waning Crescent if phase is not found
+    # Function to calculate the moon phase for a given date
+    def get_phase_name(date):
+        moon = ephem.Moon(date)
+        moon_phase = moon.phase
 
-async def fetch_weather():
-    # Getting the user's location
-    latitude, longitude = await get_user_location()
-    # Parameters for the Open Meteo API request
+        for phase_value, phase_name in phase_names:
+            if moon_phase < phase_value:
+                return phase_name
+        return "Waning Crescent"  # Default to Waning Crescent if phase is not found
+
+    # Calculate moon phases for the next 7 days
+    for i in range(7):
+        future_date = current_date + timedelta(days=i)
+        phase_name = get_phase_name(future_date)
+        phases.append(phase_name)
+
+    
+    return phases
+
+async def fetch_daily_weather(lat, lon):
+    """
+    Fetches daily weather data and returns it as a list of dictionaries.
+    """
     params = {
-        "latitude": latitude,
-        "longitude": longitude,
-        "hourly": "temperature_2m",  # Getting hourly temperature data
-        "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum",  # Getting max and min temps of the day
-        "timezone": "auto"  # Setting the timezone automatically
+        "latitude": lat,
+        "longitude": lon,
+        "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum",
+        "timezone": "auto"
     }
-    # Request to the Open Meteo API
+
     async with httpx.AsyncClient() as client:
-        response = await client.get(open_meteo_url, params=params)
-        
+        response = await client.get("https://api.open-meteo.com/v1/forecast", params=params)
+
         if response.status_code == 200:
             data = response.json()
-            
-            # Parsing hourly weather data to be more readable
-            print("Hourly Weather Forecast for the next seven days:")
-            hourly_data = data.get("hourly", {})
-            if hourly_data:
-                for time, temp in zip(hourly_data.get("time", []), hourly_data.get("temperature_2m", [])):
-                    # Format time as MM/DD/YYYY HH:MM
-                    timestamp = datetime.fromisoformat(time)
-                    formatted_time = timestamp.strftime("%m/%d/%Y %H:%M")
-                    print(f"{formatted_time} {temp}°C")
-
-            # Parsing daily weather data to be more readable
-            print("\nDaily Weather Forecast with Moon Phases:")
             daily_data = data.get("daily", {})
-            if daily_data:
-                today = datetime.utcnow()  # Current date for moon phase calculation
-                for i, (date, max_temp, min_temp, precip) in enumerate(zip(daily_data.get("time", []), 
-                                                                            daily_data.get("temperature_2m_max", []), 
-                                                                            daily_data.get("temperature_2m_min", []), 
-                                                                            daily_data.get("precipitation_sum", []))):
-                    # Format date as MM/DD/YYYY
-                    date_str = datetime.fromisoformat(date).strftime("%m/%d/%Y")
-                    future_date = today + timedelta(days=i)
-                    moon_phase = await get_moon_phase(future_date)
-                    
-                    # Print weather data with moon phase
-                    print(f"{date_str} High: {max_temp}°C, Low: {min_temp}°C, Precipitation: {precip}mm, Moon Phase: {moon_phase}")
-            
+            result = []
+            today = datetime.utcnow()
+
+            for i, (date, max_temp, min_temp, precip) in enumerate(zip(
+                daily_data.get("time", []),
+                daily_data.get("temperature_2m_max", []),
+                daily_data.get("temperature_2m_min", []),
+                daily_data.get("precipitation_sum", [])
+            )):
+                future_date = today + timedelta(days=i)
+                moon_phase = await get_moon_phase(future_date)  # Assume this function exists
+
+                result.append({
+                    "date": datetime.fromisoformat(date).strftime("%m/%d/%Y"),
+                    "high": max_temp,
+                    "low": min_temp,
+                    "precipitation": precip,
+                })
+            return result
         else:
-            print(f"Error: Unable to fetch weather data. Status code: {response.status_code}")
+            raise Exception(f"Failed to fetch daily weather: {response.status_code}")
 
 
-asyncio.run(fetch_weather())
+async def fetch_hourly_weather(lat, lon):
+    """
+    Fetches hourly weather data and returns it as a list of dictionaries.
+    """
+    params = {
+        "latitude": lat,
+        "longitude": lon,
+        "hourly": "temperature_2m",
+        "timezone": "auto"
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get("https://api.open-meteo.com/v1/forecast", params=params)
+
+        if response.status_code == 200:
+            data = response.json()
+            hourly_data = data.get("hourly", {})
+            result = []
+
+            for time, temp in zip(hourly_data.get("time", []), hourly_data.get("temperature_2m", [])):
+                timestamp = datetime.fromisoformat(time)
+                result.append({
+                    "time": timestamp.strftime("%m/%d/%Y %H:%M"),
+                    "temperature": temp
+                })
+            return result
+        else:
+            raise Exception(f"Failed to fetch hourly weather: {response.status_code}")
