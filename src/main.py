@@ -1,11 +1,34 @@
 from quart import Quart, jsonify
-from apis.weatherQueries import *
+from apis.weather import *
+from datetime import datetime, timedelta
 
 app = Quart(__name__)
 
 
 @app.route("/get_asteroids")
 async def hello():
+    return "hello world!"
+   
+
+@app.route('/get_moon_phase')
+async def test6():
+    s = await get_moon_phase(datetime.utcnow())
+    
+    return "The moon phase forecast for the next 7 days is: " +str(s)
+    
+
+# takes long, lat as arg to return daily weather for the next 7 days
+@app.route('/fetch_daily_weather')
+async def test7():
+    s = await fetch_daily_weather(44.0682,-114.7420)
+    return str(s)
+
+# takes long, lat as arg to return hourly weather for the next 7 days
+@app.route('/fetch_hourly_weather')
+async def test8():
+    s  = await fetch_hourly_weather(44.0682,-114.7420)
+    return str(s)
+=======
 
     api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
     asteroids = await get_asteroids(api_key)
@@ -78,7 +101,6 @@ async def get_nasa_picture_of_the_day():
     api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
     result = await get_nasa_picture_of_the_day(api_key)
     return result
-    
 
 
 if __name__ == "__main__":
