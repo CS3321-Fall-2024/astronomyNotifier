@@ -13,3 +13,15 @@ To run all tests use
 '''bash
 poetry run pytest
 '''
+
+For deployment you may use the Docker file. To build run
+
+```
+sudo docker build -t astronomynotifier .
+```
+
+and then to run
+```
+docker run -p 5000:5000 astronomynotifier
+```
+
