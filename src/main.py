@@ -43,14 +43,16 @@ async def get_moon_phase_API():
 
 # takes long, lat as arg to return daily weather for the next 7 days
 @app.route('/fetch_daily_weather')
-async def fetch_dail_weather_API():
-    s = await fetch_daily_weather(44.0682,-114.7420)
+async def fetch_daily_weather_API():
+    lat, lon = await get_current_location()
+    s = await fetch_daily_weather(lat,lon)
     return str(s)
 
 # takes long, lat as arg to return hourly weather for the next 7 days
 @app.route('/fetch_hourly_weather')
 async def fetch_hourly_weather_API():
-    s  = await fetch_hourly_weather(44.0682,-114.7420)
+    lat, lon = await get_current_location()
+    s  = await fetch_hourly_weather(lat,-lon)
     return str(s)
 
 
@@ -101,6 +103,14 @@ async def get_nasa_picture_of_the_day_API():
     api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
     result = await get_nasa_picture_of_the_day(api_key)
     return result
+
+# getting aurora events for 120 days(today-60 to today+60).
+@app.route("/get_aurora")
+async def get_aurora_API():
+    api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
+    lat, lon = await get_current_location() 
+    result = await aurora_data_to_string(api_key, lat, lon)
+    return str(result)
 
 
 if __name__ == "__main__":

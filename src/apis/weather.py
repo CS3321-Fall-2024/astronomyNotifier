@@ -109,3 +109,92 @@ async def fetch_hourly_weather(lat, lon):
             return result
         else:
             raise Exception(f"Failed to fetch hourly weather: {response.status_code}")
+        
+    
+import httpx
+import json
+import asyncio
+from datetime import datetime, timedelta
+import ephem  # For astronomical calculations
+
+# Function to fetch geomagnetic storms from NASA DONKI API
+async def fetch_geomagnetic_storms(start_date, end_date, api_key):
+    url = "https://api.nasa.gov/DONKI/GST"
+    params = {
+        "startDate": start_date,
+        "endDate": end_date,
+        "api_key": api_key
+    }
+    
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url, params=params)
+        print(f"Request URL: {response.url}")  # Debugging: Show full request URL
+        print(f"Status Code: {response.status_code}")  # Debugging: Show status code
+        if response.status_code == 200:
+            data = response.json()
+            print(f"Response Data: {len(data)} events found.")  # Debugging: Number of events
+            return data
+        else:
+            print(f"Error: {response.status_code} - {response.text}")
+            return []
+
+# Function to determine nighttime visibility
+def calculate_visibility(event, latitude, longitude):
+    observer = ephem.Observer()
+    observer.lat, observer.lon = str(latitude), str(longitude)
+
+    # Convert ISO 8601 date to 'YYYY/MM/DD HH:MM:SS' format
+    iso_date = event["startTime"]
+    try:
+        parsed_date = datetime.strptime(iso_date, "%Y-%m-%dT%H:%MZ")
+        observer.date = parsed_date.strftime("%Y/%m/%d %H:%M:%S")
+    except ValueError as e:
+        print(f"Error parsing date: {e}")
+        return False  # Assume not visible if there's an error
+
+    # Check the sun's altitude to determine nighttime
+    sun = ephem.Sun()
+    sun.compute(observer)
+    return sun.alt < 0  # True if it's nighttime
+
+async def get_aurora_data(api_key, latitude, longitude):
+    today = datetime.utcnow()
+    start_date = (today - timedelta(days=60)).strftime("%Y-%m-%d")
+    end_date = (today + timedelta(days=60)).strftime("%Y-%m-%d")
+    
+    # Fetch data
+    storm_data = await fetch_geomagnetic_storms(start_date, end_date, api_key)
+    if not storm_data:
+        print("No geomagnetic storm data available for the specified range.")
+        return []
+    
+    # Prepare the results list
+    aurora_events = []
+    for event in storm_data:
+        visibility = calculate_visibility(event, latitude, longitude)
+        aurora_events.append({
+            "start_time": event["startTime"],
+            "kp_index": event.get("allKpIndex", "N/A"),  # Geomagnetic index
+            "visibility": "Visible" if visibility else "Not Visible",
+        })
+    
+    return aurora_events
+
+# Function to return aurora data as a string
+async def aurora_data_to_string(api_key, latitude, longitude):
+    aurora_events = await get_aurora_data(api_key, latitude, longitude)
+    if not aurora_events:
+        return "No aurora events found."
+    output = []
+    for event in aurora_events:
+        event_info = (
+            f"Aurora event starting at {event['start_time']}:<br>"
+            f"  Kp Index: {event['kp_index']}<br>"
+            f"  Visibility: {event['visibility']}<br>"
+            "---------<br>"
+        )
+        output.append(event_info)
+    return "<br><br>".join(output)
+
+
+
