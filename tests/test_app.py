@@ -1,26 +1,57 @@
 import asyncio
 import pytest
-from main import *
+from main import test1, test2, test3, test4, test5
 
 pytest_plugins = ("pytest_asyncio",)
-
-#@pytest.mark.parametrize(
-#     "expected",
-#     [
-#         pytest.param("Pocatello", id="Getting the city name"), 
-#         ],
-# )
-# 
-# 
-# def test_get_current_city(expected):
-#     assert app.get_current_city() == expected
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
         "expected",
         [
-            pytest.param("hello world!", id="init test"),
-            ],
+         pytest.param("This is a message from test1.", id="Test message for test1"),
+        ],
 )
-async def test_hello(expected):
-    assert True
+async def test1_Call(expected):
+    assert await test1() == expected
+    
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+        "expected",
+        [
+            pytest.param("This is a message from test2.", id="Test message for test1"),
+        ],
+)
+async def test2_Call(expected):
+    assert await test2() == expected 
+    
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+        "expected",
+        [
+            pytest.param("This is a message from test2.", id="Test message for test1"),
+        ],
+)
+async def test3_Call(expected):
+    assert await test3() == expected 
+    
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+        "expected",
+        [
+            pytest.param("This is a message from test2.", id="Test message for test1"),
+        ],
+)
+async def test4_Call(expected):
+    assert await test4() == expected 
+    
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+        "expected",
+        [
+            pytest.param("This is a message from test2.", id="Test message for test1"),
+        ],
+)
+
+async def test5_Call(expected):
+    assert await test5() == expected 
+
