@@ -111,4 +111,5 @@ async def get_nasa_picture_of_the_day(api_key):
         explanation = data.get('explanation', 'No explanation available')
         image_url = data.get('url', 'No image available')
 
+
         return f"Title: {title}\nExplanation: {explanation}\nimg url = {image_url} description = {title}"

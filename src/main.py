@@ -15,6 +15,7 @@ async def test1():
     
     asteroids = [asteroid for asteroid in asteroidsList if asteroid["close_approach_data"]]
 
+
     sorted_by_magnitude = sorted(asteroids, key=lambda a: a["absolute_magnitude_h"])
     sorted_by_distance = sorted(
         asteroids,
