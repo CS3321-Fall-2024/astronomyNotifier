@@ -3,14 +3,13 @@ from quart import Quart, jsonify
 from apis.weather import *
 from apis.weatherQueries import *
 from datetime import datetime, timedelta
+import os
 
 app = Quart(__name__)
-
+api_key = os.getenv("NASA_API")
 
 @app.route("/get_asteroids")
 async def get_asteroids_API():
-   
-    api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
     asteroids = await get_asteroids(api_key)
 
     sorted_by_magnitude = sorted(asteroids, key=lambda a: a["absolute_magnitude_h"])
@@ -100,18 +99,16 @@ async def get_distance_to_iss_API():
 
 @app.route("/get_nasa_picture_of_the_day")
 async def get_nasa_picture_of_the_day_API():
-    api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
     result = await get_nasa_picture_of_the_day(api_key)
     return result
 
 # getting aurora events for 120 days(today-60 to today+60).
 @app.route("/get_aurora")
 async def get_aurora_API():
-    api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
     lat, lon = await get_current_location() 
     result = await aurora_data_to_string(api_key, lat, lon)
     return str(result)
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=5000)
