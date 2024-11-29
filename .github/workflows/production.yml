@@ -34,7 +34,6 @@ jobs:
         uses: appleboy/ssh-action@master
         with: 
           host: ec2-54-193-54-46.us-west-1.compute.amazonaws.com
-          username: team1
           key: ${{ secrets.AWS_SSH_PEM }}
           port: 22
           script: |
