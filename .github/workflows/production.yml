@@ -38,8 +38,7 @@ jobs:
           key: ${{ secrets.AWS_SSH_PEM }}
           port: 22
           script: |
-            sudo lsof -t -i :5000 | xargs sudo kill -9
-            docker ps -q | xargs --no-run-if-empty docker stop && docker ps -a -q | xargs --no-run-if-empty docker rm
+            docker rm -f prashant9711/astronomy_notifier
             echo "Connected to EC2 successfully!"
             
             # Check if Docker is installed and install if not
