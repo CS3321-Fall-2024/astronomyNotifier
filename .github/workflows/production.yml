@@ -38,9 +38,9 @@ jobs:
           key: ${{ secrets.AWS_SSH_PEM }}
           port: 22
           script: |
-            docker rm -f prashant9711/astronomy_notifier
+            sudo docker container ls
+            sudo docker rm -f prashant9711/astronomy_notifier
             echo "Connected to EC2 successfully!"
-            
             # Check if Docker is installed and install if not
             if ! command -v docker &> /dev/null
             then
