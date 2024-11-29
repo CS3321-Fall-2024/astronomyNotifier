@@ -39,8 +39,7 @@ jobs:
           port: 22
           script: |
             sudo lsof -t -i :5000 | xargs sudo kill -9
-            sudo docker stop prashant9711/astronomy_notifier
-            sudo docker rm prashant9711/astronomy_notifier
+            docker rm $(docker ps -a -q)
             echo "Connected to EC2 successfully!"
             
             # Check if Docker is installed and install if not
