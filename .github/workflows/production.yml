@@ -39,7 +39,7 @@ jobs:
           port: 22
           script: |
             echo "Connected to EC2 successfully!"
-            | docker pull prashant9711/astronomy_notifier:latest
+            docker pull prashant9711/astronomy_notifier:latest
             echo "Docker pull successful"
-            | docker run -e NASA_API="${{ secrets.NASA_API }}" -p 5000:5000 prashant9711/astronomy_notifier:latest
-            | docker ps
+            docker run -e NASA_API="${{ secrets.NASA_API }}" -p 5000:5000 prashant9711/astronomy_notifier:latest
+            docker ps
