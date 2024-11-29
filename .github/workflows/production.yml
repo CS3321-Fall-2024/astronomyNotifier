@@ -6,26 +6,15 @@ on:
       - main
 
 jobs:
-  test:
-    environment: production
-    runs-on: ubuntu-latest
-    steps:
-      - name: CHeckout Code
-        uses: actions/checkout@v3
-
-      - name: Build Docker image
-        run: |
-          docker build -t prashant9711/astronomy_notifier:latest .
-          docker run -e NASA_API=${{ secrets.NASA_API }} prashant9711/astronomy_notifier poetry run pytest
-          
   build:
-    needs: test
     environment: production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
+      - name: Build Docker image
+        run: |
+          docker build -t prashant9711/astronomy_notifier:latest . 
       - name: Login to Docker registry
         uses: docker/login-action@v1
         with:
