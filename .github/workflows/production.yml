@@ -27,7 +27,7 @@ jobs:
 
   deploy:
     needs: build
-    environment: development-scratch
+    environment: production
     runs-on: ubuntu-latest
     steps:
       - name: SSH into AWS EC2 instance
