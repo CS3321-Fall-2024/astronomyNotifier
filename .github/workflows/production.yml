@@ -38,6 +38,7 @@ jobs:
           key: ${{ secrets.AWS_SSH_PEM }}
           port: 22
           script: |
+            docker --version
             echo "Connected to EC2 successfully!"
             docker pull prashant9711/astronomy_notifier:latest
             echo "Docker pull successful"
