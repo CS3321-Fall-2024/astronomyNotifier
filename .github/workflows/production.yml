@@ -38,7 +38,8 @@ jobs:
           key: ${{ secrets.AWS_SSH_PEM }}
           port: 22
           script: |
-            echo -S "Connected to EC2 successfully!"
+            sudo amazon-linux-extras install docker
+            echo "Connected to EC2 successfully!"
             sudo -S docker pull prashant9711/astronomy_notifier:latest
             sudo -S echo "Docker pull successful"
             sudo -S docker run -e NASA_API="${{ secrets.NASA_API }}" -p 5000:5000 prashant9711/astronomy_notifier:latest
