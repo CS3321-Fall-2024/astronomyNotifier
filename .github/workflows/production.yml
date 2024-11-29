@@ -38,6 +38,7 @@ jobs:
           key: ${{ secrets.AWS_SSH_PEM }}
           port: 22
           script: |
+            sudo lsof -t -i :5000 | xargs sudo kill -9
             sudo docker stop prashant9711/astronomy_notifier
             sudo docker rm prashant9711/astronomy_notifier
             echo "Connected to EC2 successfully!"
