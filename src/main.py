@@ -3,19 +3,15 @@ from quart import Quart, jsonify
 from apis.weather import *
 from apis.weatherQueries import *
 from datetime import datetime, timedelta
+import os
 
 app = Quart(__name__)
-
+api_key = os.getenv("NASA_API")
 
 @app.route("/get_asteroids")
 async def get_asteroids_API():
-   
-    api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
     asteroidsList = await get_asteroids(api_key)
-    
     asteroids = [asteroid for asteroid in asteroidsList if asteroid["close_approach_data"]]
-
-
     sorted_by_magnitude = sorted(asteroids, key=lambda a: a["absolute_magnitude_h"])
     sorted_by_distance = sorted(
         asteroids,
@@ -117,7 +113,6 @@ async def get_distance_to_iss_API():
 
 @app.route("/get_nasa_picture_of_the_day")
 async def get_nasa_picture_of_the_day_API():
-    api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
     result = await get_nasa_picture_of_the_day(api_key)
     
     result += "\n\n^\n"
@@ -127,7 +122,6 @@ async def get_nasa_picture_of_the_day_API():
 # getting aurora events for 120 days(today-60 to today+60).
 @app.route("/get_aurora")
 async def get_aurora_API():
-    api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
     lat, lon = await get_current_location() 
     result = await get_aurora_data(api_key, lat, lon)
     
@@ -141,5 +135,5 @@ def write_to_file(data):
 
 if __name__ == "__main__":
     with open("example.txt", "w") as file:
-        file.truncate(0)  # Clears the file
-    app.run()
+        file.truncate(0)
+    app.run(host='0.0.0.0', port=5000)
