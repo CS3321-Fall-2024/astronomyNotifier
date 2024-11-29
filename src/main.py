@@ -81,7 +81,7 @@ async def get_next_iss_pass_API():
         return
 
     # Get the next 5 ISS passes within the next 7 days
-    passes = get_next_iss_pass_API(lat, lon, p=5, d=7)
+    passes = get_next_iss_pass(lat, lon, p=5, d=7)
     if passes:
         result = "Upcoming ISS Passes:<br>\n"
         for idx, pass_time in enumerate(passes, 1):

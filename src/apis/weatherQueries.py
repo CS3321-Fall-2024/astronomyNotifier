@@ -36,7 +36,7 @@ async def get_next_eclipse(lat, lon):
     
     next_eclipse = astronomy.SearchLocalSolarEclipse(time_instance, location)
     
-    return next_eclipse
+    return next_eclipse 
 
 def get_next_iss_pass(lat, lon, p, d):
     stations_url = 'http://celestrak.com/NORAD/elements/stations.txt'
