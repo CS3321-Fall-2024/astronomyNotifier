@@ -16,7 +16,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t prashant9711/astronomy_notifier:latest .
-          docker run -e NASA_API="${{ secrets.NASA_API }}" test poetry run pytest
+          docker run -e NASA_API="${{ secrets.NASA_API }}" prashant9711/astronomy_notifier poetry run pytest
           
   build:
     environment: production
