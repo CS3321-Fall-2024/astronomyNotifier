@@ -38,7 +38,6 @@ jobs:
           key: ${{ secrets.AWS_SSH_PEM }}
           port: 22
           script: |
-            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$EC2_PUBLIC_IP << 'EOF'
             sudo yum update -y
             sudo amazon-linux-extras install docker -y
             sudo service docker start
