@@ -39,7 +39,7 @@ jobs:
           port: 22
           script: |
             sudo docker container ls
-            sudo docker rm -f prashant9711/astronomy_notifier
+            sudo docker rm 3efb1190a383
             echo "Connected to EC2 successfully!"
             # Check if Docker is installed and install if not
             if ! command -v docker &> /dev/null
