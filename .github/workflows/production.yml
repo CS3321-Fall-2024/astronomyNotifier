@@ -38,6 +38,12 @@ jobs:
           key: ${{ secrets.AWS_SSH_PEM }}
           port: 22
           script: |
+            ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ec2-user@$EC2_PUBLIC_IP << 'EOF'
+            sudo yum update -y
+            sudo amazon-linux-extras install docker -y
+            sudo service docker start
+            sudo systemctl enable docker
+            sudo usermod -aG docker ec2-user  # Allow ec2-user to run docker commands without sudo
             sudo amazon-linux-extras install docker
             echo "Connected to EC2 successfully!"
             sudo -S docker pull prashant9711/astronomy_notifier:latest
