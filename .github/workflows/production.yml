@@ -39,8 +39,8 @@ jobs:
           port: 22
           script: |
             sudo docker container ls
-            sudo docker stop 3efb1190a383
-            sudo docker rm 3efb1190a383
+            sudo docker stop 0582cadcf428
+            sudo docker rm 0582cadcf428
             echo "Connected to EC2 successfully!"
             # Check if Docker is installed and install if not
             if ! command -v docker &> /dev/null
