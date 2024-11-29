@@ -26,6 +26,8 @@ jobs:
           docker push prashant9711/astronomy_notifier:latest
 
   deploy:
+    needs: build
+    environment: development-scratch
     runs-on: ubuntu-latest
     steps:
       - name: Install dependencies
