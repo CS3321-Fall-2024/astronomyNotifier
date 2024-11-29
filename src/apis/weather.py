@@ -39,17 +39,18 @@ async def get_moon_phase(current_date): # getting the moon phase for specific da
         phases.append(phase_name)
 
     
-    return phases
+    return ", ".join(phases)
 
 async def fetch_daily_weather(lat, lon):
     """
-    Fetches daily weather data and returns it as a list of dictionaries.
+    Fetches daily weather data and returns it as a string.
     """
     params = {
         "latitude": lat,
         "longitude": lon,
         "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum",
-        "timezone": "auto"
+        "timezone": "auto",
+        "temperature_unit": "fahrenheit",
     }
 
     async with httpx.AsyncClient() as client:
@@ -70,13 +71,12 @@ async def fetch_daily_weather(lat, lon):
                 future_date = today + timedelta(days=i)
                 moon_phase = await get_moon_phase(future_date)  # Assume this function exists
 
-                result.append({
-                    "date": datetime.fromisoformat(date).strftime("%m/%d/%Y"),
-                    "high": max_temp,
-                    "low": min_temp,
-                    "precipitation": precip,
-                })
-            return result
+                result.append(f"Date: {datetime.fromisoformat(date).strftime('%m/%d/%Y')}, "
+                              f"High Temp: {max_temp} F, Low Temp: {min_temp} F, "
+                              f"Precipitation: {precip}mm, Moon Phase: {moon_phase}")
+            
+            # Return all weather data as a single concatenated string
+            return "\n".join(result)
         else:
             raise Exception(f"Failed to fetch daily weather: {response.status_code}")
 
@@ -89,7 +89,8 @@ async def fetch_hourly_weather(lat, lon):
         "latitude": lat,
         "longitude": lon,
         "hourly": "temperature_2m",
-        "timezone": "auto"
+        "timezone": "auto",
+        "temperature_unit": "fahrenheit",
     }
 
     async with httpx.AsyncClient() as client:
@@ -102,11 +103,10 @@ async def fetch_hourly_weather(lat, lon):
 
             for time, temp in zip(hourly_data.get("time", []), hourly_data.get("temperature_2m", [])):
                 timestamp = datetime.fromisoformat(time)
-                result.append({
-                    "time": timestamp.strftime("%m/%d/%Y %H:%M"),
-                    "temperature": temp
-                })
-            return result
+                result.append(f"Time: {timestamp.strftime('%m/%d/%Y %H:%M')}, Temperature: {temp} F")
+
+            # Return all hourly weather data as a single formatted string
+            return "\n".join(result)
         else:
             raise Exception(f"Failed to fetch hourly weather: {response.status_code}")
         
@@ -168,33 +168,25 @@ async def get_aurora_data(api_key, latitude, longitude):
         print("No geomagnetic storm data available for the specified range.")
         return []
     
-    # Prepare the results list
-    aurora_events = []
+    # Prepare the results string
+    aurora_string = ""
     for event in storm_data:
         visibility = calculate_visibility(event, latitude, longitude)
-        aurora_events.append({
-            "start_time": event["startTime"],
-            "kp_index": event.get("allKpIndex", "N/A"),  # Geomagnetic index
-            "visibility": "Visible" if visibility else "Not Visible",
-        })
-    
-    return aurora_events
-
-# Function to return aurora data as a string
-async def aurora_data_to_string(api_key, latitude, longitude):
-    aurora_events = await get_aurora_data(api_key, latitude, longitude)
-    if not aurora_events:
-        return "No aurora events found."
-    output = []
-    for event in aurora_events:
-        event_info = (
-            f"Aurora event starting at {event['start_time']}:<br>"
-            f"  Kp Index: {event['kp_index']}<br>"
-            f"  Visibility: {event['visibility']}<br>"
-            "---------<br>"
+        
+        # Format Kp Index: List of Kp Index values -> Average Kp Index for simplicity
+        kp_values = event.get('allKpIndex', [])
+        if kp_values:
+            avg_kp = sum(k['kpIndex'] for k in kp_values) / len(kp_values)
+            kp_info = f"Average Kp Index: {avg_kp:.2f}"
+        else:
+            kp_info = "Kp Index: N/A"
+        
+        # Format the event details
+        aurora_string += (
+            f"Start Time: {datetime.fromisoformat(event['startTime']).strftime('%b %d, %Y %I:%M %p UTC')}\n"
+            f"{kp_info}\n"
+            f"Visibility: {'Visible' if visibility else 'Not Visible'}\n"
+            f"{'-' * 40}\n"
         )
-        output.append(event_info)
-    return "<br><br>".join(output)
-
-
-
+    
+    return aurora_string
