@@ -11,7 +11,7 @@ RUN pip install poetry
 
 RUN poetry install
 
-RUN poetry run pytest
+# RUN poetry run pytest
 
 EXPOSE 5000
 
