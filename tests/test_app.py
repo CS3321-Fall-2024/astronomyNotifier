@@ -7,27 +7,6 @@ from main import *
 
 pytest_plugins = ("pytest_asyncio",)
 
-#@pytest.mark.parametrize(
-#     "expected",
-#     [
-#         pytest.param("Pocatello", id="Getting the city name"), 
-#         ],
-# )
-# 
-# 
-# def test_get_current_city(expected):
-#     assert app.get_current_city() == expected
-
-@pytest.mark.asyncio
-@pytest.mark.parametrize(
-        "expected",
-        [
-            pytest.param("hello world!", id="init test"),
-            ],
-)
-async def test_hello(expected):
-    assert True
-
 
 asteroids = [ 
     {
@@ -113,3 +92,4 @@ async def test_get_aurora_API(mocker):
     args, kwargs = aurora_dat_mock.call_args
     assert args[1] == 120
     assert args[2] == 40
+
