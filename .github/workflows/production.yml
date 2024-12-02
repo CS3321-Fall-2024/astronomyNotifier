@@ -6,6 +6,51 @@ on:
       - main
 
 jobs:
+  test:
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.11'
+      - name: Install Poetry
+        run: |
+          pip install poetry
+      - name: Install dependencies
+        run: |
+          poetry install
+      - name: Run pytest
+        run: |
+          poetry run pytest -vv
+          
+  vulnerability_scan:
+    environment: production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.11'
+      - name: Install Poetry
+        run: |
+          pip install poetry
+      - name: Install dependencies
+        run: |
+          poetry install
+      - name: Install pip-audit
+        run: |
+          pip install pip-audit
+      - name: Run Vulnerability Scan
+        run: |
+          PIPAPI_PYTHON_LOCATION=$(poetry env info --path)/bin/python poetry run pip-audit
+
   build:
     environment: production
     runs-on: ubuntu-latest
