@@ -49,7 +49,7 @@ jobs:
           pip install pip-audit
       - name: Run Vulnerability Scan
         run: |
-          PIPAPI_PYTHON_LOCATION=$(poetry env info --path)/bin/python poetry run pip-audit
+          poetry run pip-audit
 
   build:
     environment: production
