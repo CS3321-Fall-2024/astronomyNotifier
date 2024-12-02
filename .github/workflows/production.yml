@@ -24,12 +24,9 @@ jobs:
       - name: Install dependencies
         run: |
           poetry install
-      - name: Enter the virtual environment
-        run: |
-          poetry shell
       - name: Run pytest
         run: |
-          pytest -vv
+          poetry run pytest -vv
 
   build:
     environment: production
