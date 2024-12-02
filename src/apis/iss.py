@@ -1,42 +1,7 @@
 import httpx
-import astronomy
-from datetime import datetime
-import time
 import math
-from geopy.geocoders import Nominatim
 from skyfield.api import Topos, load
 
-async def get_asteroids(api_key):
-
-    url = f"https://api.nasa.gov/neo/rest/v1/neo/browse?api_key={api_key}"
-    asteroids = []
-
-    async with httpx.AsyncClient() as client:
-        while url:
-            try:
-                response = await client.get(url)
-                response.raise_for_status()  
-                data = response.json()
-                asteroids.extend(data.get('near_earth_objects', []))
-                url = data.get('links', {}).get('next')
-            except httpx.HTTPStatusError as e:
-                print(f"HTTP error occurred: {e.response.status_code} - {e.response.text}")
-                break  
-            except httpx.RequestError as e:
-                print(f"Request error occurred: {e}")
-                break  
-
-    return asteroids
-
-async def get_next_eclipse(lat, lon):
-    
-    location = astronomy.Observer(latitude=lat, longitude=lon)
-    
-    time_instance = astronomy.Time(datetime.now().strftime('%Y-%m-%d'))
-    
-    next_eclipse = astronomy.SearchLocalSolarEclipse(time_instance, location)
-    
-    return next_eclipse 
 
 def get_next_iss_pass(lat, lon, p, d):
     stations_url = 'http://celestrak.com/NORAD/elements/stations.txt'
@@ -64,18 +29,6 @@ def get_next_iss_pass(lat, lon, p, d):
     else:
         return f"No passes found within the next {d} days."
 
-async def get_current_location():
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.get("https://ipinfo.io")
-            data = response.json()
-        
-        location_str = data['loc']  
-        latitude, longitude = map(float, location_str.split(','))
-        
-        return latitude, longitude
-    except Exception as e:
-        print("Error fetching location:")
     
 async def get_distance_to_iss(lat, lon):
     satellites = load.tle_file('http://www.celestrak.com/NORAD/elements/stations.txt')
