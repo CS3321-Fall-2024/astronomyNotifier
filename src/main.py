@@ -1,4 +1,3 @@
-
 from quart import Quart, jsonify
 from apis.asteroids import *
 from apis.aurora import *

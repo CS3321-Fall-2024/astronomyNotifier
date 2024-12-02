@@ -1,5 +1,5 @@
 import astronomy
-import datetime
+from datetime import datetime
 
 async def get_next_eclipse(lat, lon):
     
