@@ -11,7 +11,7 @@ from datetime import datetime, timedelta
 import os
 
 app = Quart(__name__)
-api_key = os.getenv("NASA_API")
+api_key = "cyA6A9N1vmADe8FxrOi7gg5jqs5EhGJCKC9Bclt1"
 
 @app.route("/get_asteroids")
 async def get_asteroids_API():
