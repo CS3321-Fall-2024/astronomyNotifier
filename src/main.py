@@ -1,7 +1,12 @@
 
 from quart import Quart, jsonify
+from apis.asteroids import *
+from apis.aurora import *
+from apis.eclipse import *
+from apis.iss import *
+from apis.location import *
+from apis.moon import *
 from apis.weather import *
-from apis.weatherQueries import *
 from datetime import datetime, timedelta
 import os
 
