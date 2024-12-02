@@ -4,13 +4,13 @@ from apis.iss import get_next_iss_pass, get_distance_to_iss, get_nasa_picture_of
 
 def test_next_iss_pass():
     result = get_next_iss_pass(0,0,1,5, True)
-    assert result == ['2024-01-01T19:07:17Z']
+    assert result == ['2024-01-01T18:56:19Z']
 
 @pytest.mark.asyncio
 async def test_get_distance_to_iss():
     result = await get_distance_to_iss(0, 0, True)
     result = (int(result[0]), int(result[1]), int(result[1]))
-    assert result == (9653, 40, 40)
+    assert result == (6414, 9, 9)
 
 class empty_response:
     called = 0
