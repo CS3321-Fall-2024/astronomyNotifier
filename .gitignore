@@ -3,3 +3,5 @@ tests/__pycache__/
 src/stations.txt
 example.txt
 stations.txt
+.coverage
+htmlcov/

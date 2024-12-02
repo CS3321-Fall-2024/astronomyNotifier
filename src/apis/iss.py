@@ -3,7 +3,7 @@ import math
 from skyfield.api import Topos, load
 
 
-def get_next_iss_pass(lat, lon, p, d):
+def get_next_iss_pass(lat, lon, p, d, fixed_time = False):
     stations_url = 'http://celestrak.com/NORAD/elements/stations.txt'
     satellites = load.tle_file(stations_url)
     by_name = {sat.name: sat for sat in satellites}
@@ -13,6 +13,9 @@ def get_next_iss_pass(lat, lon, p, d):
     
     ts = load.timescale()
     t0 = ts.now()
+
+    if fixed_time:
+        t0 = ts.tt(2024,1,1,12,0)
 
     # Find ISS passes within the next d days
     t, events = satellite.find_events(location, t0, t0 + d)
@@ -30,7 +33,7 @@ def get_next_iss_pass(lat, lon, p, d):
         return f"No passes found within the next {d} days."
 
     
-async def get_distance_to_iss(lat, lon):
+async def get_distance_to_iss(lat, lon, fixed_time = False):
     satellites = load.tle_file('http://www.celestrak.com/NORAD/elements/stations.txt')
     sat = [sat for sat in satellites if sat.name == 'ISS (ZARYA)'][0]
     
@@ -38,6 +41,9 @@ async def get_distance_to_iss(lat, lon):
     
     ts = load.timescale()
     t = ts.now()
+
+    if fixed_time:
+        t = ts.tt(2024,1,1,12,0)
     
     # Calculate the position of the ISS
     astrometric = sat.at(t)
