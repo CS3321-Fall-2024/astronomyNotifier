@@ -12,7 +12,6 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.11"
-python-weather = "^2.0.7"
 pip = "^24.3.1"
 app = "^0.0.1"
 geocoder = "^1.38.1"
@@ -27,6 +26,7 @@ skyfield = "^1.49"
 geopy = "^2.4.1"
 pytest-mock = "^3.14.0"
 pytest-cov = "^6.0.0"
+pip-audit = "^2.7.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"
