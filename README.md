@@ -9,9 +9,9 @@ poetry run python src/main.py
 you can then visit http://localhost:5000 to query the api
 
 
-To run all tests use
+To run all tests and generate a html coverage report, use
 '''bash
-poetry run pytest
+poetry run pytest --cov=src/ --cov-report=html tests/
 '''
 
 For deployment you may use the Docker file. To build run
