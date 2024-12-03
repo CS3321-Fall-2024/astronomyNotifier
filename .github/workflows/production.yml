@@ -92,7 +92,6 @@ jobs:
           port: 22
           script: |
             sudo docker ps -a
-            sudo docker stop 598a3044b157
-            sudo docker container prune
+            sudo docker container prune -f
             sudo docker ps -a
             
