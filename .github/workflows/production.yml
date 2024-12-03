@@ -92,12 +92,11 @@ jobs:
           port: 22
           script: |
             sudo docker ps -a
-            sudo docker stop 9adc8ee2f38c
             sudo docker container prune -f
             sudo docker image prune -a -f
             sudo docker ps -a
             sudo docker system df
-            sudo docker pull prashant9711/astronomy_notifier:latest
-            sudo docker run -e NASA_API="${{ secrets.NASA_API }}" -d  prashant9711/astronomy_notifier:latest
+            echo "${{ secrets.AWS_SSH_PEM }}" | base64 --decode > ~/.ssh/aws-key.pem
+            chmod 600 ~/.ssh/aws-key.pem
             
             
