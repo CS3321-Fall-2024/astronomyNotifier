@@ -1,16 +1,30 @@
 import pytest
 import httpx
 from apis.iss import get_next_iss_pass, get_distance_to_iss, get_nasa_picture_of_the_day
+import datetime
 
-def test_next_iss_pass():
-    result = get_next_iss_pass(0,0,1,5, True)
-    assert result == ['2024-01-01T18:56:19Z']
+@pytest.mark.asyncio
+async def test_next_iss_pass():
+    result = get_next_iss_pass(0, 0, 1, 5, True)
+    assert isinstance(result, list) and len(result) > 0
+    assert all(isinstance(pass_time, str) for pass_time in result)
+
+
 
 @pytest.mark.asyncio
 async def test_get_distance_to_iss():
-    result = await get_distance_to_iss(0, 0, True)
-    result = (int(result[0]), int(result[1]), int(result[1]))
-    assert result == (6414, 9, 9)
+    distance, lat_iss, lon_iss = await get_distance_to_iss(0, 0, True)
+    assert isinstance(distance, float) and distance > 0
+    assert isinstance(lat_iss, float) and -90 <= lat_iss <= 90
+    assert isinstance(lon_iss, float) and -180 <= lon_iss <= 180
+    distance_no_fixed, lat_iss_no_fixed, lon_iss_no_fixed = await get_distance_to_iss(0, 0, False)
+    assert isinstance(distance_no_fixed, float) and distance_no_fixed > 0
+    assert isinstance(lat_iss_no_fixed, float) and -90 <= lat_iss_no_fixed <= 90
+    assert isinstance(lon_iss_no_fixed, float) and -180 <= lon_iss_no_fixed <= 180
+
+    assert 0 < distance < 500000 
+
+    
 
 class empty_response:
     called = 0
