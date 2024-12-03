@@ -92,11 +92,12 @@ jobs:
           port: 22
           script: |
             sudo docker ps -a
-            sudo docker stop 994ddd6efdb7
             sudo docker container prune -f
             sudo docker image prune -a -f
             sudo docker ps -a
             sudo docker system df
+            sudo apt-get update
+            sudo apt-get install ufw
             sudo ufw allow 5000/tcp
             curl http://localhost:5000
             
