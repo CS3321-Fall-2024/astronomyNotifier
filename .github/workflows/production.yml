@@ -97,7 +97,7 @@ jobs:
             sudo docker image prune -a -f
             sudo docker ps -a
             sudo docker system df
-            curl http://localhost:5000
             sudo ufw allow 5000/tcp
+            curl http://localhost:5000
             
-
+            
