@@ -95,8 +95,9 @@ jobs:
             sudo docker stop 994ddd6efdb7
             sudo docker container prune -f
             sudo docker image prune -a -f
-            sudo docker pull prashant9711/astronomy_notifier:latest
-            sudo docker run -e NASA_API="${{ secrets.NASA_API }}" -d -p 5000:5000 prashant9711/astronomy_notifier:latest
             sudo docker ps -a
             sudo docker system df
+            curl http://localhost:5000
+            sudo ufw allow 5000/tcp
             
+
