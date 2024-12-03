@@ -92,5 +92,7 @@ jobs:
           port: 22
           script: |
             sudo docker ps -a
-            sudo df-h
-            sudo docker ls
+            sudo docker stop 598a3044b157
+            sudo docker container prune
+            sudo docker ps -a
+            
