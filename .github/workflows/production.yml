@@ -96,8 +96,7 @@ jobs:
             sudo docker image prune -a -f
             sudo docker ps -a
             sudo docker system df
-            sudo apt-get update
-            sudo apt-get install ufw
+            sudo yum install ufw
             sudo ufw allow 5000/tcp
             curl http://localhost:5000
             
