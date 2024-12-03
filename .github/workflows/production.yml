@@ -25,7 +25,15 @@ jobs:
           poetry install
       - name: Run pytest
         run: |
-          poetry run pytest -vv
+          poetry run coverage run -m pytest
+          poetry run coverage report
+          poetry run coverage lcov
+      - name: Check coverage percentage
+        uses: VeryGoodOpenSource/very_good_coverage@v1.1.1
+        with:
+          path: ./coverage.lcov
+          min_coverage: 80
+          exclude: '**/**/__init__.py tests/**'
           
   vulnerability_scan:
     environment: production
