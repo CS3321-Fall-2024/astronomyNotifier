@@ -92,12 +92,12 @@ jobs:
           port: 22
           script: |
             sudo docker ps -a
+            sudo docker stop 9adc8ee2f38c
             sudo docker container prune -f
             sudo docker image prune -a -f
             sudo docker ps -a
             sudo docker system df
-            sudo yum install ufw
-            sudo ufw allow 5000/tcp
-            curl http://localhost:5000
+            sudo docker pull prashant9711/astronomy_notifier:latest
+            sudo docker run -e NASA_API="${{ secrets.NASA_API }}" -d  prashant9711/astronomy_notifier:latest
             
             
