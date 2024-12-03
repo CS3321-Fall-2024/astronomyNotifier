@@ -92,7 +92,6 @@ jobs:
           port: 22
           script: |
             sudo docker ps -a
-            sudo docker pull prashant9711/astronomy_notifier:latest
             sudo docker run -e NASA_API="${{ secrets.NASA_API }}" -d -p 5000:5000 prashant9711/astronomy_notifier:latest
             sudo docker ps -a
             
