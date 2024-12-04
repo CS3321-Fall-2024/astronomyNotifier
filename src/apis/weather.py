@@ -28,20 +28,16 @@ async def fetch_daily_weather(lat, lon):
             data = response.json()
             daily_data = data.get("daily", {})
             result = []
-            today = datetime.utcnow()
 
-            for i, (date, max_temp, min_temp, precip) in enumerate(zip(
+            for date, max_temp, min_temp, precip in zip(
                 daily_data.get("time", []),
                 daily_data.get("temperature_2m_max", []),
                 daily_data.get("temperature_2m_min", []),
                 daily_data.get("precipitation_sum", [])
-            )):
-                future_date = today + timedelta(days=i)
-                moon_phase = await get_moon_phase(future_date)  # Assume this function exists
-
+            ):
                 result.append(f"Date: {datetime.fromisoformat(date).strftime('%m/%d/%Y')}, "
                               f"High Temp: {max_temp} F, Low Temp: {min_temp} F, "
-                              f"Precipitation: {precip}mm, Moon Phase: {moon_phase}")
+                              f"Precipitation: {precip}mm")
             
             # Return all weather data as a single concatenated string
             return "\n".join(result)

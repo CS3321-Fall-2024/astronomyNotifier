@@ -22,11 +22,7 @@ class fake_response:
 
 
 @pytest.mark.asyncio
-async def test_fetch_daily_weather(mocker):
-    mocker.patch("apis.moon.get_moon_phase", return_value='First Quarter, First Quarter, First Quarter, First Quarter, Waxing Crescent, Waxing Crescent, Waxing Crescent')
-    
+async def test_fetch_daily_weather(mocker):  
     mocker.patch.object(httpx.AsyncClient, "get", return_value = fake_response())
-
     result = await fetch_daily_weather(30, 40)
-
-    assert result == "Date: 01/01/2024, High Temp: 83 F, Low Temp: 32 F, Precipitation: 4mm, Moon Phase: Waxing Crescent, Waxing Crescent, Waxing Crescent, Waxing Crescent, First Quarter, First Quarter, First Quarter"
+    assert result == "Date: 01/01/2024, High Temp: 83 F, Low Temp: 32 F, Precipitation: 4mm"
