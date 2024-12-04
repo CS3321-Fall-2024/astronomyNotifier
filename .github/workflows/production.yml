@@ -91,12 +91,13 @@ jobs:
           key: ${{ secrets.AWS_SSH_PEM }}
           script: |
             sudo docker ps -a
-            sudo docker stop 0ee1bd875b0c
-            sudo docker stop f282fc8cc746
+            sudo docker stop 1b342d932335
+            sudo docker stop 0d85a26e9b98
             sudo docker container prune -f
             sudo docker image prune -a -f
             sudo docker ps -a
-            sudo  sudo docker run -e NASA_API="${{ secrets.NASA_API }}" -d -p 80:80 prashant9711/astronomy_notifier:latest
+            sudo docker pull prashant9711/astronomy_notifier:latest
+            sudo docker run -e NASA_API="${{ secrets.NASA_API }}" -d -p 80:80 prashant9711/astronomy_notifier:latest
             sudo docker system df
             
             
