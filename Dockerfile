@@ -13,7 +13,7 @@ RUN poetry install
 
 # RUN poetry run pytest
 
-EXPOSE 5000
+EXPOSE 80
 
 # Set environment variable to pass ARG at runtime (Optional)
 ENV NASA_API=${NASA_API}
