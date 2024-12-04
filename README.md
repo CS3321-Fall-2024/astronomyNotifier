@@ -22,6 +22,6 @@ sudo docker build -t astronomynotifier .
 
 and then to run
 ```
-docker run -p 5000:5000 astronomynotifier
+docker run -p 80:80 astronomynotifier
 ```
 

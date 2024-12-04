@@ -89,14 +89,14 @@ jobs:
           host: ${{ secrets.AWS_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
           key: ${{ secrets.AWS_SSH_PEM }}
-          port: 22
           script: |
             sudo docker ps -a
+            sudo docker stop 0ee1bd875b0c
+            sudo docker stop f282fc8cc746
             sudo docker container prune -f
             sudo docker image prune -a -f
             sudo docker ps -a
+            sudo  sudo docker run -e NASA_API="${{ secrets.NASA_API }}" -d -p 80:80 prashant9711/astronomy_notifier:latest
             sudo docker system df
-            echo "${{ secrets.AWS_SSH_PEM }}" | base64 --decode > ~/.ssh/aws-key.pem
-            chmod 600 ~/.ssh/aws-key.pem
             
             
