@@ -142,4 +142,4 @@ def write_to_file(data):
 if __name__ == "__main__":
     with open("example.txt", "w") as file:
         file.truncate(0)
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=5000)
